@@ -7,7 +7,7 @@
     tools:context="com.example.lg.testing.activities.MainActivity2$PlaceholderFragment">
 
     <TextView android:id="@+id/section_label" android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content" android:layout_alignParentBottom="true" />
     <HorizontalScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

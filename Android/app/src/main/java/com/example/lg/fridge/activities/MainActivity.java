@@ -6,20 +6,21 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-
 import com.example.lg.fridge.R;
+
 import com.example.lg.fridge.ViewFoodFragment;
 
 import java.util.Locale;
 
-public class MainActivity extends ActionBarActivity implements ActionBar.TabListener {
+public class MainActivity extends ActionBarActivity {
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -29,12 +30,17 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
      * may be best to switch to a
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
-    SectionsPagerAdapter mSectionsPagerAdapter;
+    private Toolbar actionBar;
+    private Button tab01;
+    private Button tab02;
+    private Button tab03;
+    private Button tab04;
+    private final String FRIDGE_FRAGMENT_TAG = "fridge_fragment";
+
 
     /**
      * The {@link ViewPager} that will host the section contents.
      */
-    ViewPager mViewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,38 +48,21 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         setContentView(R.layout.activity_main);
 
         // Set up the action bar.
-        final ActionBar actionBar = getSupportActionBar();
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+        actionBar = (Toolbar)findViewById(R.id.actionBar);
+        setSupportActionBar(actionBar);
+        //getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
-        // Create the adapter that will return a fragment for each of the three
-        // primary sections of the activity.
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        //tab을 위장한 버튼 4개들
+        tab01 = (Button)findViewById(R.id.main_tab01);
+        tab02 = (Button)findViewById(R.id.main_tab02);
+        tab03 = (Button)findViewById(R.id.main_tab03);
+        tab04 = (Button)findViewById(R.id.main_tab04);
+        tab01.setOnClickListener(mOnClickListener);
+        tab02.setOnClickListener(mOnClickListener);
+        tab03.setOnClickListener(mOnClickListener);
+        tab04.setOnClickListener(mOnClickListener);
+        tab01.performClick();   //맨 처음 시작될 때 tab 01이 기본으로 켜지도록
 
-        // Set up the ViewPager with the sections adapter.
-        mViewPager = (ViewPager) findViewById(R.id.pager);
-        mViewPager.setAdapter(mSectionsPagerAdapter);
-
-        // When swiping between different sections, select the corresponding
-        // tab. We can also use ActionBar.Tab#select() to do this if we have
-        // a reference to the Tab.
-        mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
-            @Override
-            public void onPageSelected(int position) {
-                actionBar.setSelectedNavigationItem(position);
-            }
-        });
-
-        // For each of the sections in the app, add a tab to the action bar.
-        for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
-            // Create a tab with text corresponding to the page title defined by
-            // the adapter. Also specify this Activity object, which implements
-            // the TabListener interface, as the callback (listener) for when
-            // this tab is selected.
-            actionBar.addTab(
-                    actionBar.newTab()
-                            .setText(mSectionsPagerAdapter.getPageTitle(i))
-                            .setTabListener(this));
-        }
 
         //임시코드
         Button btn = (Button)findViewById(R.id.main_btn_view_as_image);
@@ -84,6 +73,55 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 
             }
         });
+    }
+
+    private View.OnClickListener mOnClickListener = new View.OnClickListener(){
+        @Override
+        public void onClick(View v) {
+            if (v.isSelected()) return;     //만약 이미 선택되어있던 tab이면 아무 처리도 하지 않는다
+            Log.d("TESTING", "clicked");
+            setSelected(v);         //tab 4개 중 선택한 버튼을 선택된 채로 유지하기 위한 method
+            switch(v.getId()) {
+                case R.id.main_tab01:
+                    callUpFridgeFragment(0);
+                    break;
+                case R.id.main_tab02:
+                    callUpFridgeFragment(1);
+                    break;
+                case R.id.main_tab03:
+                    callUpFridgeFragment(2);
+                    break;
+                case R.id.main_tab04:
+                    callUpFridgeFragment(3);
+                    break;
+            }
+        }
+    };
+
+    //더러운 코드
+    private void setSelected(View v) {
+        tab01.setSelected(false);
+        tab02.setSelected(false);
+        tab03.setSelected(false);
+        tab04.setSelected(false);
+        v.setSelected(true);
+    }
+
+    //pos에 따른 냉장고 fragment를 가져옴. --> 0 ~ 3 값
+    private void callUpFridgeFragment(int pos) {
+        PlaceholderFragment pf = PlaceholderFragment.newInstance(pos);
+        FragmentTransaction t = getSupportFragmentManager().beginTransaction();
+        Fragment f = getSupportFragmentManager().findFragmentByTag(FRIDGE_FRAGMENT_TAG);
+        if (f != null) {
+            //만약 이미 fridge fragment가 하나 떠 있다면 replace를한다.
+            t.replace(R.id.main_fragment_container, pf, FRIDGE_FRAGMENT_TAG);
+            t.commit();
+            return;
+        }
+        t.add(R.id.main_fragment_container, pf, FRIDGE_FRAGMENT_TAG);
+        t.commit();
+        return;
+
     }
 
     private void callViewFoodDialog() {
@@ -115,61 +153,6 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         return super.onOptionsItemSelected(item);
     }
 */
-    @Override
-    public void onTabSelected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
-        // When the given tab is selected, switch to the corresponding page in
-        // the ViewPager.
-        mViewPager.setCurrentItem(tab.getPosition());
-    }
-
-    @Override
-    public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
-    }
-
-    @Override
-    public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
-    }
-
-    /**
-     * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
-     * one of the sections/tabs/pages.
-     */
-    private class SectionsPagerAdapter extends FragmentPagerAdapter {
-
-        private SectionsPagerAdapter(FragmentManager fm) {
-            super(fm);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            // getItem is called to instantiate the fragment for the given page.
-            // Return a PlaceholderFragment (defined as a static inner class below).
-            return PlaceholderFragment.newInstance(position + 1);
-        }
-
-        @Override
-        public int getCount() {
-            // Show 3 total pages.
-            return 4;
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            Locale l = Locale.getDefault();
-            switch (position) {
-                case 0:
-                    return getString(R.string.title_section1).toUpperCase(l);
-                case 1:
-                    return getString(R.string.title_section2).toUpperCase(l);
-                case 2:
-                    return getString(R.string.title_section3).toUpperCase(l);
-                case 3:
-                    return "Section 4".toUpperCase(l);
-            }
-            return null;
-        }
-    }
-
     /**
      * A placeholder fragment containing a simple view.
      */

@@ -35,7 +35,7 @@ public class CalendarAdapter extends BaseAdapter {
      * calendar instance for previous month for getting complete view
      */
     public GregorianCalendar pmonthmaxset;
-    //private GregorianCalendar selectedDate;
+    private GregorianCalendar selectedDate;
     int firstDay;
     int maxWeeknumber;
     int maxP;
@@ -44,6 +44,7 @@ public class CalendarAdapter extends BaseAdapter {
     String itemvalue, curentDateString;
     DateFormat df;
     private Calendar cal;
+    View today;
 
     //private ArrayList<String> items;
     public static List<String> dayString;
@@ -53,12 +54,12 @@ public class CalendarAdapter extends BaseAdapter {
         CalendarAdapter.dayString = new ArrayList<String>();
         Locale.setDefault(Locale.KOREA);
         month = monthCalendar;
-        //selectedDate = (GregorianCalendar) monthCalendar.clone();
+        selectedDate = (GregorianCalendar) monthCalendar.clone();
         mContext = c;
         month.set(GregorianCalendar.DAY_OF_MONTH, 1);
         //this.items = new ArrayList<String>();
         df = new SimpleDateFormat("yyyy-MM-dd", Locale.KOREA);
-        curentDateString = df.format(month.getTime());
+        curentDateString = df.format(selectedDate.getTime());
         cal = Calendar.getInstance();
         refreshDays();
     }
@@ -129,12 +130,12 @@ public class CalendarAdapter extends BaseAdapter {
         }
 
         if (dayString.get(position).equals(curentDateString)) {
-            setSelected(v);
-            previousView = v;
+            today = v;
         } else {
             v.setBackgroundResource(R.drawable.list_item_background);                           //셀이 눌렸을때와 안눌렸을때의 배경 설정
         }
         dayView.setText(gridvalue);
+        highlightToday();
 
         // create date string for comparison
         /*
@@ -160,13 +161,8 @@ public class CalendarAdapter extends BaseAdapter {
         return v;
     }
 
-    public View setSelected(View view) {
-        if (previousView != null) {
-            previousView.setBackgroundResource(R.drawable.list_item_background);
-        }
-        previousView = view;
-        view.setBackgroundColor(Color.RED);
-        return view;
+    public void highlightToday() {
+        today.setBackgroundColor(Color.RED);
     }
     //완전 더러운 코드
     //근데 다른 사람꺼 가져와서 하는거라 그냥 떼어붙임
