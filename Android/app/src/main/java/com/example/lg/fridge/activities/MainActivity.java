@@ -1,9 +1,9 @@
 package com.example.lg.fridge.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
@@ -13,23 +13,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.example.lg.fridge.R;
-
 import com.example.lg.fridge.ViewFoodFragment;
-
-import java.util.Locale;
 
 public class MainActivity extends ActionBarActivity {
 
-    /**
-     * The {@link android.support.v4.view.PagerAdapter} that will provide
-     * fragments for each of the sections. We use a
-     * {@link FragmentPagerAdapter} derivative, which will keep every
-     * loaded fragment in memory. If this becomes too memory intensive, it
-     * may be best to switch to a
-     * {@link android.support.v4.app.FragmentStatePagerAdapter}.
-     */
     private Toolbar actionBar;
     private Button tab01;
     private Button tab02;
@@ -50,7 +42,18 @@ public class MainActivity extends ActionBarActivity {
         // Set up the action bar.
         actionBar = (Toolbar)findViewById(R.id.actionBar);
         setSupportActionBar(actionBar);
-        //getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+
+        //toolbar의 alarm image click을 테스트해보기위함
+        ImageView actionbar_alarm = (ImageView)findViewById(R.id.actionbar_alarm);
+        actionbar_alarm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getApplicationContext(), "alarm clicked", Toast.LENGTH_SHORT).show();
+                Intent i = new Intent(getApplicationContext(), ExpiryListActivity.class);
+                startActivity(i);
+                return;
+            }
+        });
 
         //tab을 위장한 버튼 4개들
         tab01 = (Button)findViewById(R.id.main_tab01);
@@ -130,29 +133,6 @@ public class MainActivity extends ActionBarActivity {
         f.show(fm,"");
     }
 
-/*
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main_activity2, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-*/
     /**
      * A placeholder fragment containing a simple view.
      */

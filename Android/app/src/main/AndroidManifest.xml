@@ -36,6 +36,10 @@
             android:name=".activities.MainActivity"
             android:label="@string/title_activity_main_activity2" >
         </activity>
+        <activity
+            android:name=".activities.ExpiryListActivity"
+            android:label="@string/title_activity_expiry_list" >
+        </activity>
     </application>
 
 </manifest>

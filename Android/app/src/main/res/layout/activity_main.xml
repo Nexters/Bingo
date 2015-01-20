@@ -18,7 +18,12 @@
             android:layout_weight="1"
             android:text="냉장실 문"
             android:background="@drawable/tab_bground_selector"
-            android:textColor="@drawable/tab_text_selector"/>
+            android:textColor="@drawable/tab_text_selector"
+            android:layout_margin="1dp"
+            android:shadowColor="#000000"
+            android:shadowDx="10"
+            android:shadowDy="10"
+            android:shadowRadius="5"/>
         <Button
             android:id="@+id/main_tab02"
             android:layout_width="0px"
@@ -26,7 +31,8 @@
             android:layout_weight="1"
             android:text="냉장실 안"
             android:background="@drawable/tab_bground_selector"
-            android:textColor="@drawable/tab_text_selector"/>
+            android:textColor="@drawable/tab_text_selector"
+            android:layout_margin="1dp"/>
         <Button
             android:id="@+id/main_tab03"
             android:layout_width="0px"
@@ -34,7 +40,8 @@
             android:layout_weight="1"
             android:text="냉동실 문"
             android:background="@drawable/tab_bground_selector"
-            android:textColor="@drawable/tab_text_selector"/>
+            android:textColor="@drawable/tab_text_selector"
+            android:layout_margin="1dp"/>
         <Button
             android:id="@+id/main_tab04"
             android:layout_width="0px"
@@ -42,7 +49,8 @@
             android:layout_weight="1"
             android:text="냉동실 안"
             android:background="@drawable/tab_bground_selector"
-            android:textColor="@drawable/tab_text_selector"/>
+            android:textColor="@drawable/tab_text_selector"
+            android:layout_margin="1dp"/>
         </LinearLayout>
     <LinearLayout
         android:orientation="vertical"

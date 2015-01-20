@@ -29,50 +29,75 @@ import java.util.Locale;
 public class CalendarAdapter extends BaseAdapter {
     private Context mContext;
 
-    private java.util.Calendar month;
-    public GregorianCalendar pmonth; // calendar instance for previous month
-    /**
-     * calendar instance for previous month for getting complete view
-     */
-    public GregorianCalendar pmonthmaxset;
-    private GregorianCalendar selectedDate;
-    int firstDay;
-    int maxWeeknumber;
-    int maxP;
-    int calMaxP;
-    int mnthlength;
-    String itemvalue, curentDateString;
-    DateFormat df;
-    private Calendar cal;
-    View today;
+    private Calendar month;
+    private GregorianCalendar pmonth;	//instance for previous month
 
-    //private ArrayList<String> items;
+    private GregorianCalendar pmonthmaxset;
+    private GregorianCalendar selectedDate;
+    private int firstDay;
+    private int maxWeeknumber;
+    private int maxP;
+    private int calMaxP;
+    private int mnthlength;
+    private String itemvalue, currentDateString;
+    private DateFormat df;
+    private Calendar cal;
+    private String gridvalue;		//각 grid에 들어갈 실질적인 string value
+
     public static List<String> dayString;
-    private View previousView;
 
     public CalendarAdapter(Context c, GregorianCalendar monthCalendar) {
         CalendarAdapter.dayString = new ArrayList<String>();
         Locale.setDefault(Locale.KOREA);
         month = monthCalendar;
-        selectedDate = (GregorianCalendar) monthCalendar.clone();
+        selectedDate = (GregorianCalendar)monthCalendar.clone();
         mContext = c;
         month.set(GregorianCalendar.DAY_OF_MONTH, 1);
-        //this.items = new ArrayList<String>();
         df = new SimpleDateFormat("yyyy-MM-dd", Locale.KOREA);
-        curentDateString = df.format(selectedDate.getTime());
+        currentDateString = df.format(selectedDate.getTime());
         cal = Calendar.getInstance();
         refreshDays();
     }
-/*
-    public void setItems(ArrayList<String> items) {
-        for (int i = 0; i != items.size(); i++) {
-            if (items.get(i).length() == 1) {
-                items.set(i, "0" + items.get(i));
-            }
+
+    protected void refreshDays() {
+        dayString.clear();
+        Locale.setDefault(Locale.KOREA);
+        pmonth = (GregorianCalendar)month.clone();
+        //현재 달의 제일 첫 번째 날을 구함
+        firstDay = month.get(GregorianCalendar.DAY_OF_WEEK);
+        //현재 달의 총 주(week) 수를 구함
+        maxWeeknumber = month.getActualMaximum(GregorianCalendar.WEEK_OF_MONTH);
+        //gridview의 최대 row 갯수를 정함
+        mnthlength = maxWeeknumber * 7;
+        //지난달의 maximum day를 구함
+        maxP = getMaxP();
+        calMaxP = maxP - (firstDay - 1);
+        pmonthmaxset = (GregorianCalendar)pmonth.clone();
+        pmonthmaxset.set(GregorianCalendar.DAY_OF_MONTH, calMaxP + 1);
+
+        //filling calendar gridview
+        for (int n = 0; n < mnthlength; n++) {
+            itemvalue = df.format(pmonthmaxset.getTime());
+            pmonthmaxset.add(GregorianCalendar.DATE, 1);
+            dayString.add(itemvalue);
         }
-        //this.items = items;
     }
-*/
+
+    private int getMaxP() {
+        int maxP;
+        if (month.get(GregorianCalendar.MONTH) == month
+                .getActualMinimum(GregorianCalendar.MONTH)) {
+            pmonth.set((month.get(GregorianCalendar.YEAR) - 1),
+                    month.getActualMaximum(GregorianCalendar.MONTH), 1);
+        } else {
+            pmonth.set(GregorianCalendar.MONTH,
+                    month.get(GregorianCalendar.MONTH) - 1);
+        }
+        maxP = pmonth.getActualMaximum(GregorianCalendar.DAY_OF_MONTH);
+
+        return maxP;
+    }
+
     public int getCount() {
         return dayString.size();
     }
@@ -86,7 +111,6 @@ public class CalendarAdapter extends BaseAdapter {
         return 0;
     }
 
-    // create a new view for each item referenced by the Adapter
     public View getView(int position, View convertView, ViewGroup parent) {
         View v = convertView;
         TextView dayView;
@@ -107,8 +131,7 @@ public class CalendarAdapter extends BaseAdapter {
         cal.set(Calendar.DAY_OF_MONTH, Integer.parseInt(separatedTime[2]));
         int day = cal.get(Calendar.DAY_OF_WEEK);
 
-        // taking last part of date. ie; 2 from 2012-12-02
-        String gridvalue = separatedTime[2].replaceFirst("^0*", "");
+        gridvalue = separatedTime[2].replaceFirst("0*", "");
         if (day == Calendar.SUNDAY || day == Calendar.SATURDAY) {
             //만약 주말이면 빨간색 글씨로
             dayView.setTextColor(Color.RED);
@@ -129,103 +152,17 @@ public class CalendarAdapter extends BaseAdapter {
             }
         }
 
-        if (dayString.get(position).equals(curentDateString)) {
-            today = v;
+        if (dayString.get(position).equals(currentDateString)) {
+            highlightToday(v);
         } else {
             v.setBackgroundResource(R.drawable.list_item_background);                           //셀이 눌렸을때와 안눌렸을때의 배경 설정
         }
         dayView.setText(gridvalue);
-        highlightToday();
 
-        // create date string for comparison
-        /*
-        String date = dayString.get(position);
-
-        if (date.length() == 1) {
-            date = "0" + date;
-        }
-        String monthStr = "" + (month.get(GregorianCalendar.MONTH) + 1);
-        if (monthStr.length() == 1) {
-            monthStr = "0" + monthStr;
-        }
-        */
-        // show icon if date is not empty and it exists in the items array
-        /*
-        ImageView iw = (ImageView) v.findViewById(R.id.date_icon);
-        if (date.length() > 0 && items != null && items.contains(date)) {
-            iw.setVisibility(View.VISIBLE);
-        } else {
-            iw.setVisibility(View.INVISIBLE);
-        }
-        */
         return v;
     }
 
-    public void highlightToday() {
-        today.setBackgroundColor(Color.RED);
+    public void highlightToday(View v) {
+        v.setBackgroundColor(Color.RED);
     }
-    //완전 더러운 코드
-    //근데 다른 사람꺼 가져와서 하는거라 그냥 떼어붙임
-    //clearTodayHighlight() 는 사용자가 날짜를 클릭했을 때
-    //기본으로 오늘 날짜가 하이라이트 된 것을 지우기 위함
-    public void clearTodayHighlight() {
-        if (previousView != null) {
-            previousView.setBackgroundResource(R.drawable.list_item_background);
-            previousView = null;
-        }
-
-    }
-
-    public void refreshDays() {
-        // clear items
-        //items.clear();
-        dayString.clear();
-        Locale.setDefault(Locale.KOREA);
-        pmonth = (GregorianCalendar) month.clone();
-        // month start day. ie; sun, mon, etc
-        firstDay = month.get(GregorianCalendar.DAY_OF_WEEK);
-        // finding number of weeks in current month.
-        maxWeeknumber = month.getActualMaximum(GregorianCalendar.WEEK_OF_MONTH);
-        // allocating maximum row number for the gridview.
-        mnthlength = maxWeeknumber * 7;
-        maxP = getMaxP(); // previous month maximum day 31,30....
-        calMaxP = maxP - (firstDay - 1);// calendar offday starting 24,25 ...
-        /**
-         * Calendar instance for getting a complete gridview including the three
-         * month's (previous,current,next) dates.
-         */
-        pmonthmaxset = (GregorianCalendar) pmonth.clone();
-        /**
-         * setting the start date as previous month's required date.
-         */
-        pmonthmaxset.set(GregorianCalendar.DAY_OF_MONTH, calMaxP + 1);
-
-        /**
-         * filling calendar gridview.
-         */
-        for (int n = 0; n < mnthlength; n++) {
-
-            itemvalue = df.format(pmonthmaxset.getTime());
-            pmonthmaxset.add(GregorianCalendar.DATE, 1);
-            dayString.add(itemvalue);
-
-        }
-    }
-
-    private int getMaxP() {
-        int maxP;
-        if (month.get(GregorianCalendar.MONTH) == month
-                .getActualMinimum(GregorianCalendar.MONTH)) {
-            pmonth.set((month.get(GregorianCalendar.YEAR) - 1),
-                    month.getActualMaximum(GregorianCalendar.MONTH), 1);
-        } else {
-            pmonth.set(GregorianCalendar.MONTH,
-                    month.get(GregorianCalendar.MONTH) - 1);
-        }
-        maxP = pmonth.getActualMaximum(GregorianCalendar.DAY_OF_MONTH);
-
-        return maxP;
-    }
-
-
 }
