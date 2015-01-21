@@ -15,10 +15,13 @@ import java.util.TreeSet;
  */
 public class ExpiryListAdapter extends BaseAdapter{
     private static final int TYPE_ITEM = 0;
-    private static final int TYPE_SEPARATOR = 1;
+    private static final int TYPE_HEADER = 1;
+    private static final int TYPE_BLANK = 2;
 
     private ArrayList<String> mData = new ArrayList<String>();
     private TreeSet<Integer> sectionHeader = new TreeSet<Integer>();
+    //걍 한번 만들어보는 section간의 간격 구현
+    private TreeSet<Integer> blankSpace = new TreeSet<Integer>();
 
     private LayoutInflater mInflater;
 
@@ -37,6 +40,16 @@ public class ExpiryListAdapter extends BaseAdapter{
         notifyDataSetChanged();
     }
 
+    /**
+     *
+     * @param item: could be anything. doesen't matter. just set it to blank string
+     */
+    public void addBlankSpace(final String item) {
+        mData.add(item);
+        blankSpace.add(mData.size() - 1);
+        notifyDataSetChanged();
+    }
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder = null;
@@ -49,16 +62,22 @@ public class ExpiryListAdapter extends BaseAdapter{
                     convertView = mInflater.inflate(R.layout.expiry_list_item, null);
                     holder.textView = (TextView)convertView.findViewById(R.id.expiry_list_item_text);
                     break;
-                case TYPE_SEPARATOR:
+                case TYPE_HEADER:
                     convertView = mInflater.inflate(R.layout.expiry_list_header, null);
                     holder.textView = (TextView)convertView.findViewById(R.id.expiry_list_header_text);
+                    break;
+                case TYPE_BLANK:
+                    //blank space일 경우
+                    convertView = mInflater.inflate(R.layout.expiry_list_blank, null);
+                    holder.textView = null;     //set textview to null because textview doesn't exist in blank space
                     break;
             }
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        holder.textView.setText(mData.get(position));
+        if (holder.textView != null)
+            holder.textView.setText(mData.get(position));
 
         return convertView;
     }
@@ -80,12 +99,21 @@ public class ExpiryListAdapter extends BaseAdapter{
 
     @Override
     public int getViewTypeCount() {
-        return 2;
+        return 3;
     }
 
     @Override
     public int getItemViewType(int position) {
-        return sectionHeader.contains(position) ? TYPE_SEPARATOR : TYPE_ITEM;
+        if (sectionHeader.contains(position)) {
+            //header일 경우
+            return TYPE_HEADER;
+        } else if (blankSpace.contains(position)) {
+            //blank space일 경우
+            return TYPE_BLANK;
+        }else {
+            //item일 경우
+            return TYPE_ITEM;
+        }
     }
 
     //static class로 한 이유는 ViewHolder holder = new ViewHolder();를 부를 때 마다

@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
@@ -70,11 +69,6 @@ public class EditFoodFragment extends DialogFragment{
     }
 
     public void onResume() {
-        ViewGroup.LayoutParams params = getDialog().getWindow().getAttributes();
-        params.width = WindowManager.LayoutParams.MATCH_PARENT;
-        params.height = WindowManager.LayoutParams.WRAP_CONTENT;
-        getDialog().getWindow().setAttributes((WindowManager.LayoutParams)params);
-
         //나타날때 fade in 하는 애니메이션
         getDialog().getWindow().setWindowAnimations(R.style.dialog_fade_in_animation);
         super.onResume();

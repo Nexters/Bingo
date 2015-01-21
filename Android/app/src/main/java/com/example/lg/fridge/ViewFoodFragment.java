@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 
 import com.example.lg.fridge.calendar.CalendarFragment;
@@ -52,11 +51,6 @@ public class ViewFoodFragment extends DialogFragment {
     }
 
     public void onResume() {
-        //xml내에 정의된 params들을 구현화하기 위한 절차?
-        ViewGroup.LayoutParams params = getDialog().getWindow().getAttributes();
-        params.width = WindowManager.LayoutParams.MATCH_PARENT;
-        params.height = WindowManager.LayoutParams.WRAP_CONTENT;
-        getDialog().getWindow().setAttributes((WindowManager.LayoutParams)params);
 
         //없어질때 fade out 하는 애니메이션
         getDialog().getWindow().setWindowAnimations(R.style.dialog_fade_out_animation);

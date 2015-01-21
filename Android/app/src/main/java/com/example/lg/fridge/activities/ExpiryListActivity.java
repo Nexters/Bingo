@@ -27,6 +27,7 @@ public class ExpiryListActivity extends ActionBarActivity implements AdapterView
         for (int i = 1; i < 30; i++) {
             mAdapter.addItem("Row Item #" + i);
             if (i % 4 == 0) {
+                mAdapter.addBlankSpace("");
                 mAdapter.addSectionHeaderItem("Section #" + i);
             }
         }
