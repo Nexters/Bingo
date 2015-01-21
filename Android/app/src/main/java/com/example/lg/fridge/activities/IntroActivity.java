@@ -23,7 +23,7 @@ public class IntroActivity extends ActionBarActivity {
           public void run() {
               try {
                   //Thread will sleep for 3 seconds
-                  sleep(3*1000);
+                  sleep(2*1000);
 
                   startActivity(i);
                   finish();

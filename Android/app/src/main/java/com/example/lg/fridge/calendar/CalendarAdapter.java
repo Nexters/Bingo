@@ -23,7 +23,11 @@ import java.util.Locale;
  */
 
 /**
- * Created by LG on 2015-01-15.
+ *
+ * ######################################
+ * 셀 하나 크기의 원인은 cell의 backgroundresource 이미지 크기
+ * #######################################
+ *
  */
 public class CalendarAdapter extends BaseAdapter {
     private Context mContext;

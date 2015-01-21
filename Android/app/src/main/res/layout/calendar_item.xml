@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
     <!-- Custom calendar를 위한 xml !-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/calendar_cell"
     android:gravity="center"
-    android:orientation="vertical"
-    android:padding="2dip" > <!--셀 하나 !-->
+    android:orientation="vertical"> <!--셀 하나 -->
 
     <TextView
         xmlns:android="http://schemas.android.com/apk/res/android"
@@ -17,14 +15,5 @@
         android:textSize="14dip"
         android:textStyle="bold" >
     </TextView>
-
-    <ImageView
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/date_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/date"
-        android:src="@drawable/dot"
-        android:visibility="gone" />
 
 </LinearLayout>
