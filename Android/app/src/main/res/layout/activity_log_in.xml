@@ -1,15 +1,27 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
     <include layout="@layout/actionbar"
         android:layout_alignParentTop="true"
         android:layout_width="match_parent"
         android:layout_height="50dp"/>
+    <EditText
+        android:id="@+id/log_in_id"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="ID"
+        />
+    <EditText
+        android:id="@+id/log_in_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="PASSWORD"
+        />
     <Button
-        android:layout_alignParentBottom="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Go to main activity"
         android:id="@+id/log_in_btn_to_main"/>
 
-</RelativeLayout>
+</LinearLayout>
