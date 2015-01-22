@@ -20,6 +20,8 @@ import java.util.Locale;
 
 /***
  * Custom calendar를 위한 adapter
+ * 구글에서 떠온거에 혹을 이리저리 붙이느라 더러움
+ * 양해바람
  */
 
 /**

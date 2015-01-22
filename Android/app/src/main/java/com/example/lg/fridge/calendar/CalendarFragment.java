@@ -1,7 +1,10 @@
 package com.example.lg.fridge.calendar;
 /**
- * Calendar만을 보여주는 fragment
+ * Calendar를 보여주는 fragment
+ * 구글에서 떠온거에 혹 이리저리 붙인 코드라 더러움
+ * 양해바람
  */
+
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -19,7 +22,10 @@ import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 
-
+/*
+Todo: Builder 클래스를 만들어서 customizing을 직관적으로 할 수 있게 만들것
+eg)CustomCalendar cal = CustomCalendar.Builder().textSize(15).backgroundImage(R.drawable.bg).selectedDateBackgroundImage(R.drawable.selected).build();
+ */
 public class CalendarFragment extends Fragment {
     private GregorianCalendar month;
     private CalendarAdapter adapter;
@@ -60,15 +66,16 @@ public class CalendarFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View v,
                                     int position, long id) {
                 //twoSelectedDates에 있는 날짜와 눌린 날짜를 비교하여
-                //이미 리스트에 있는 날짜면 뒤의 처리를 안하고 넘어간다
+                //이미 리스트에 있는 날짜면 리스트에서 삭제
                 String selectedGridDate = CalendarAdapter.dayString.get(position);
                 if(twoSelectedDates.contains(selectedGridDate)) {
-                    //만약 두 개의 날짜에 이미 포함된 날짜가 클릭되었다면
-                    //아무 처리도 안하고 넘어간다
+                    //만약 두 개의 날짜에 이미 포함된 날짜가 클릭되었다면 ~~
+                    deleteDateFromSelectedDates(selectedGridDate);
+                    unsetSelectedView(v);
                     return;
                 } else {
                     addNewDateToSelectedDates(selectedGridDate);
-                    setSelectedViews(v);
+                    setSelectedView(v);
                 }
 
                 //이번 달 밖의 날짜가 클릭되었을 때 calendar를 새로운 달로 바꾸기 위한 procedure
@@ -91,6 +98,11 @@ public class CalendarFragment extends Fragment {
         return v;
     }
 
+    private void deleteDateFromSelectedDates(String date) {
+        twoSelectedDates.remove(date);
+
+    }
+
     private void addNewDateToSelectedDates(String date) {
         if (twoSelectedDates.size() == 2) {
             twoSelectedDates.remove(0);
@@ -98,8 +110,13 @@ public class CalendarFragment extends Fragment {
         twoSelectedDates.add(twoSelectedDates.size(), date);
     }
 
+    private void unsetSelectedView(View v) {
+        twoSelectedViews.remove(v);
+        v.setBackgroundResource(R.drawable.list_item_background);
+    }
+
     //선택된 날짜를 highlight하기 위한 method
-    private void setSelectedViews(View v) {
+    private void setSelectedView(View v) {
         if (twoSelectedViews.size() == 2) {
             twoSelectedViews.get(0).setBackgroundResource(R.drawable.list_item_background);
             twoSelectedViews.remove(0);

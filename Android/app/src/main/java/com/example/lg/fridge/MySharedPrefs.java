@@ -42,7 +42,7 @@ public class MySharedPrefs {
         e.commit();
     }
 
-    //ID를 LAST_EXIT을 key로하여 저장해둔다.
+    //ID를 LAST_LOGGED_IN을 key로하여 저장해둔다.
     //이 메소드는 어떠한 id로 로그인할때마다 불려야 한다.
     public void addToLastLoggedInId(String id) {
         SharedPreferences.Editor e = pref.edit();
