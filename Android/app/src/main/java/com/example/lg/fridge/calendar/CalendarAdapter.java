@@ -44,7 +44,8 @@ public class CalendarAdapter extends BaseAdapter {
     private int maxP;
     private int calMaxP;
     private int mnthlength;
-    private String itemvalue, currentDateString;
+    private String itemvalue;
+    public String currentDateString;
     private DateFormat df;
     private Calendar cal;
     private String gridvalue;		//각 grid에 들어갈 실질적인 string value
@@ -52,6 +53,7 @@ public class CalendarAdapter extends BaseAdapter {
     public static List<String> dayString;
 
     public CalendarAdapter(Context c, GregorianCalendar monthCalendar) {
+
         CalendarAdapter.dayString = new ArrayList<String>();
         Locale.setDefault(Locale.KOREA);
         month = monthCalendar;
@@ -160,7 +162,12 @@ public class CalendarAdapter extends BaseAdapter {
         if (dayString.get(position).equals(currentDateString)) {
             highlightToday(v);
         } else {
-            v.setBackgroundResource(R.drawable.list_item_background);                           //셀이 눌렸을때와 안눌렸을때의 배경 설정
+            v.setBackgroundResource(R.drawable.list_item_background);
+        }
+
+        for (int i = 0; i < CalendarFragment.twoSelectedDates.size(); i++) {
+            if (dayString.get(position).equals(CalendarFragment.twoSelectedDates.get(i)))
+                v.setBackgroundResource(R.drawable.calendar_cel_selectl);
         }
         dayView.setText(gridvalue);
 

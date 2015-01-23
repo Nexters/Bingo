@@ -29,17 +29,18 @@ eg)CustomCalendar cal = CustomCalendar.Builder().textSize(15).backgroundImage(R.
 public class CalendarFragment extends Fragment {
     private GregorianCalendar month;
     private CalendarAdapter adapter;
-    private ArrayList<String> twoSelectedDates = new ArrayList<String>();
+    public static ArrayList<String> twoSelectedDates = new ArrayList<String>();
     private ArrayList<View> twoSelectedViews = new ArrayList<View>();
     private TextView title;
 
+    public CalendarFragment(){}
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.calendar, container, false);
         Locale.setDefault(Locale.KOREA);
 
         month = (GregorianCalendar)GregorianCalendar.getInstance();
-        adapter = new CalendarAdapter(getActivity(), month);
 
+        adapter = new CalendarAdapter(getActivity(), month);
         GridView gridview = (GridView)v.findViewById(R.id.gridview);
         gridview.setAdapter(adapter);
 
@@ -156,4 +157,5 @@ public class CalendarFragment extends Fragment {
 
         title.setText(android.text.format.DateFormat.format("MMMM yyyy", month));
     }
+
 }
