@@ -22,10 +22,6 @@ import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 
-/*
-Todo: Builder 클래스를 만들어서 customizing을 직관적으로 할 수 있게 만들것
-eg)CustomCalendar cal = CustomCalendar.Builder().textSize(15).backgroundImage(R.drawable.bg).selectedDateBackgroundImage(R.drawable.selected).build();
- */
 public class CalendarFragment extends Fragment {
     private GregorianCalendar month;
     private CalendarAdapter adapter;
@@ -158,4 +154,9 @@ public class CalendarFragment extends Fragment {
         title.setText(android.text.format.DateFormat.format("MMMM yyyy", month));
     }
 
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        twoSelectedDates.clear();
+    }
 }

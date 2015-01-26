@@ -14,5 +14,6 @@
     <string name="title_section3">냉동실 문</string>
     <string name="title_section4">냉동실 안</string>
     <string name="title_activity_expiry_list">ExpiryList</string>
+    <string name="title_activity_speech">SpeechActivity</string>
 
 </resources>

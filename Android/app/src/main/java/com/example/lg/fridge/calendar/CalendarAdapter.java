@@ -165,6 +165,8 @@ public class CalendarAdapter extends BaseAdapter {
             v.setBackgroundResource(R.drawable.list_item_background);
         }
 
+        //달력 화면을 넘기거나 할 때 전에 선택했던 날자를 계속 선택된채로 머무르게하기위한
+        //아주 더러운 코드
         for (int i = 0; i < CalendarFragment.twoSelectedDates.size(); i++) {
             if (dayString.get(position).equals(CalendarFragment.twoSelectedDates.get(i)))
                 v.setBackgroundResource(R.drawable.calendar_cel_selectl);

@@ -5,18 +5,15 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.lg.fridge.FridgeFragment;
 import com.example.lg.fridge.R;
 import com.example.lg.fridge.ViewFoodFragment;
 
@@ -28,11 +25,6 @@ public class MainActivity extends ActionBarActivity {
     private Button tab03;
     private Button tab04;
     private final String FRIDGE_FRAGMENT_TAG = "fridge_fragment";
-
-
-    /**
-     * The {@link ViewPager} that will host the section contents.
-     */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +68,15 @@ public class MainActivity extends ActionBarActivity {
 
             }
         });
+
+        Button btn2 = (Button)findViewById(R.id.main_btn_view_as_list);
+        btn2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getApplicationContext(), SpeechActivity.class);
+                startActivity(i);
+            }
+        });
     }
 
     private View.OnClickListener mOnClickListener = new View.OnClickListener(){
@@ -86,16 +87,16 @@ public class MainActivity extends ActionBarActivity {
             setSelected(v);         //tab 4개 중 선택한 버튼을 선택된 채로 유지하기 위한 method
             switch(v.getId()) {
                 case R.id.main_tab01:
-                    callUpFridgeFragment(0);
+                    callUpFridgeFragment(0, 2);
                     break;
                 case R.id.main_tab02:
-                    callUpFridgeFragment(1);
+                    callUpFridgeFragment(1, 1);
                     break;
                 case R.id.main_tab03:
-                    callUpFridgeFragment(2);
+                    callUpFridgeFragment(2, 4);
                     break;
                 case R.id.main_tab04:
-                    callUpFridgeFragment(3);
+                    callUpFridgeFragment(3, 3);
                     break;
             }
         }
@@ -110,67 +111,32 @@ public class MainActivity extends ActionBarActivity {
         v.setSelected(true);
     }
 
-    //pos에 따른 냉장고 fragment를 가져옴. --> 0 ~ 3 값
-    private void callUpFridgeFragment(int pos) {
-        PlaceholderFragment pf = PlaceholderFragment.newInstance(pos);
+    //pos에 따른 냉장고 fragment를 가져옴. --> 1 ~ 4 값
+    private void callUpFridgeFragment(int pos, int rowNum) {
+        /*FridgeFragment01 fr = FridgeFragment01.newInstance(pos);
         FragmentTransaction t = getSupportFragmentManager().beginTransaction();
-        Fragment f = getSupportFragmentManager().findFragmentByTag(FRIDGE_FRAGMENT_TAG);
-        if (f != null) {
-            //만약 이미 fridge fragment가 하나 떠 있다면 replace를한다.
-            t.replace(R.id.main_fragment_container, pf, FRIDGE_FRAGMENT_TAG);
+        Fragment existingFrag = getSupportFragmentManager().findFragmentByTag(FRIDGE_FRAGMENT_TAG);
+        if (existingFrag != null) {     //만약 이미 떠있는 fridgefragment가있으면 replace를한다.
+            t.replace(R.id.main_fragment_container, fr, FRIDGE_FRAGMENT_TAG);
             t.commit();
             return;
         }
-        t.add(R.id.main_fragment_container, pf, FRIDGE_FRAGMENT_TAG);
-        t.commit();
-        return;
-
+        t.add(R.id.main_fragment_container, fr, FRIDGE_FRAGMENT_TAG);
+        t.commit();*/
+        FragmentTransaction t = getSupportFragmentManager().beginTransaction();
+        Fragment existingFrag = getSupportFragmentManager().findFragmentByTag(FRIDGE_FRAGMENT_TAG);
+        if (existingFrag != null) {     //만약 이미 떠있는 fridgefragment가있으면 replace를한다.
+            t.replace(R.id.main_fragment_container, FridgeFragment.newInstance(pos, rowNum), FRIDGE_FRAGMENT_TAG);
+            t.commit();
+            return;
+        }
+        t.add(R.id.main_fragment_container, FridgeFragment.newInstance(pos, rowNum), FRIDGE_FRAGMENT_TAG).commit();
     }
 
     private void callViewFoodDialog() {
         FragmentManager fm = getSupportFragmentManager();
         ViewFoodFragment f = new ViewFoodFragment();
         f.show(fm,"");
-    }
-
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private static final String ARG_SECTION_NUMBER = "section_number";
-
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
-            return fragment;
-        }
-
-        public PlaceholderFragment() {
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_main_activity2, container, false);
-            //임시적
-            Bundle b = getArguments();
-            TextView t = (TextView)rootView.findViewById(R.id.section_label);
-            String text = String.valueOf(b.getInt(ARG_SECTION_NUMBER));
-            t.setText(text);
-
-
-            return rootView;
-        }
     }
 
 }
