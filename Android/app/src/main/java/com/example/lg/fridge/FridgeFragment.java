@@ -6,6 +6,7 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 public class FridgeFragment extends Fragment {
     private static final String FRAGMENT_NUMBER = "fragment_number";
@@ -15,14 +16,17 @@ public class FridgeFragment extends Fragment {
     private int numOfRows;
 
     private int rowHeight;
+    private FridgeRow.Style style;
+
 
     //fragmentNumber는 1~4, numOfRows는 한 냉장고칸에있는 row의 갯수
-    public static FridgeFragment newInstance(int fragmentNumber, int numOfRows) {
+    public static FridgeFragment newInstance(int fragmentNumber, int numOfRows, FridgeRow.Style style) {
         FridgeFragment fragment = new FridgeFragment();
         Bundle args = new Bundle();
         args.putInt(FRAGMENT_NUMBER, fragmentNumber);
         args.putInt(NUM_OF_ROWS, numOfRows);
         fragment.setArguments(args);
+        fragment.style = style;
         return fragment;
     }
 
@@ -56,11 +60,21 @@ public class FridgeFragment extends Fragment {
         }
         View main = inflater.inflate(R.layout.fragment_fridge, container, false);
         //이제 이 프래그먼트 안에 numOfRows 수 만큼 child fragment를 넣는다.
-        for (int i = 0; i < numOfRows; i++) {
-            getChildFragmentManager().beginTransaction().add(R.id.fridge_fragment_container_for_rows, FridgeRow.newInstance(rowHeight)).commit();
-        }
-        getChildFragmentManager().executePendingTransactions();
+        createFridgeRows();
         return main;
+    }
+
+    private void createFridgeRows() {
+        for (int i = 0; i < numOfRows; i++) {
+            getChildFragmentManager().beginTransaction().add(R.id.fridge_fragment_container_for_rows, FridgeRow.newInstance(rowHeight, style)).commit();
+            getChildFragmentManager().executePendingTransactions();
+        }
+    }
+
+    public void changeRowStyle(FridgeRow.Style style) {
+        this.style = style;
+        Toast.makeText(getActivity(), "changing to style: " + style, Toast.LENGTH_SHORT).show();
+        createFridgeRows();
     }
 
 }

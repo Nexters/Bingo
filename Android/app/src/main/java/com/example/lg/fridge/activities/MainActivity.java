@@ -7,29 +7,46 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.lg.fridge.FridgeFragment;
+import com.example.lg.fridge.FridgeRow;
 import com.example.lg.fridge.R;
 import com.example.lg.fridge.ViewFoodFragment;
 
-public class MainActivity extends ActionBarActivity {
+import java.util.HashMap;
+import java.util.Map;
 
+public class MainActivity extends ActionBarActivity {
     private Toolbar actionBar;
     private Button tab01;
     private Button tab02;
     private Button tab03;
     private Button tab04;
+
+    private Button btn;
+    private Button btn2;
     private final String FRIDGE_FRAGMENT_TAG = "fridge_fragment";
+
+    private Map<Integer, Integer> fridgeAndRowMap = new HashMap<Integer, Integer>();
+
+    private FridgeRow.Style currentStyle;
+    private int currentFridgeFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //테스트하기위한 임시 코드
+        fridgeAndRowMap.put(0, 2);
+        fridgeAndRowMap.put(1,1);
+        fridgeAndRowMap.put(2,4);
+        fridgeAndRowMap.put(3,3);
+        currentStyle = FridgeRow.Style.IMAGE;
 
         // Set up the action bar.
         actionBar = (Toolbar)findViewById(R.id.actionBar);
@@ -52,58 +69,84 @@ public class MainActivity extends ActionBarActivity {
         tab02 = (Button)findViewById(R.id.main_tab02);
         tab03 = (Button)findViewById(R.id.main_tab03);
         tab04 = (Button)findViewById(R.id.main_tab04);
-        tab01.setOnClickListener(mOnClickListener);
-        tab02.setOnClickListener(mOnClickListener);
-        tab03.setOnClickListener(mOnClickListener);
-        tab04.setOnClickListener(mOnClickListener);
-        tab01.performClick();   //맨 처음 시작될 때 tab 01이 기본으로 켜지도록
+        tab01.setOnClickListener(tabClickListener);
+        tab02.setOnClickListener(tabClickListener);
+        tab03.setOnClickListener(tabClickListener);
+        tab04.setOnClickListener(tabClickListener);
+        //tab01.performClick();   //맨 처음 시작될 때 tab 01이 기본으로 켜지도록
 
+        btn = (Button)findViewById(R.id.main_btn_view_as_image);
+        btn2 = (Button)findViewById(R.id.main_btn_view_as_list);
+        btn.setOnClickListener(lowerButtonClickListener);
+        btn2.setOnClickListener(lowerButtonClickListener);
+        //btn.performClick();
 
-        //임시코드
-        Button btn = (Button)findViewById(R.id.main_btn_view_as_image);
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                callViewFoodDialog();
-
-            }
-        });
-
-        Button btn2 = (Button)findViewById(R.id.main_btn_view_as_list);
-        btn2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(getApplicationContext(), SpeechActivity.class);
-                startActivity(i);
-            }
-        });
+        setUpInitialScreen();       //맨 처음 실행시켰을 때 처음 탭과 이미지로 보기가 설정되어있는걸로 한다.
     }
 
-    private View.OnClickListener mOnClickListener = new View.OnClickListener(){
+    private void setUpInitialScreen() {
+        currentStyle = FridgeRow.Style.IMAGE;
+        currentFridgeFragment = 0;
+        setLowerButtonSelected(btn);
+        setTabSelected(tab01);
+        callUpFridgeFragment(currentFridgeFragment, fridgeAndRowMap.get(currentFridgeFragment), currentStyle);
+    }
+
+    private void changeRowsToImage() {
+        currentStyle = FridgeRow.Style.IMAGE;
+        callUpFridgeFragment(currentFridgeFragment, fridgeAndRowMap.get(currentFridgeFragment), currentStyle);
+
+    }
+
+    private void changeRowsToList() {
+        currentStyle = FridgeRow.Style.LIST;
+        callUpFridgeFragment(currentFridgeFragment, fridgeAndRowMap.get(currentFridgeFragment), currentStyle);
+    }
+
+    private View.OnClickListener lowerButtonClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if (v.isSelected()) return;
+            setLowerButtonSelected(v);
+            switch(v.getId()) {
+                case R.id.main_btn_view_as_image:
+                    changeRowsToImage();
+                    break;
+                case R.id.main_btn_view_as_list:
+                    changeRowsToList();
+                    break;
+            }
+        }
+    };
+
+    private View.OnClickListener tabClickListener = new View.OnClickListener(){
         @Override
         public void onClick(View v) {
             if (v.isSelected()) return;     //만약 이미 선택되어있던 tab이면 아무 처리도 하지 않는다
-            Log.d("TESTING", "clicked");
-            setSelected(v);         //tab 4개 중 선택한 버튼을 선택된 채로 유지하기 위한 method
+            setTabSelected(v);         //tab 4개 중 선택한 버튼을 선택된 채로 유지하기 위한 method
             switch(v.getId()) {
                 case R.id.main_tab01:
-                    callUpFridgeFragment(0, 2);
+                    currentFridgeFragment = 0;
+                    callUpFridgeFragment(currentFridgeFragment, fridgeAndRowMap.get(currentFridgeFragment), currentStyle);
                     break;
                 case R.id.main_tab02:
-                    callUpFridgeFragment(1, 1);
+                    currentFridgeFragment = 1;
+                    callUpFridgeFragment(currentFridgeFragment, fridgeAndRowMap.get(currentFridgeFragment), currentStyle);
                     break;
                 case R.id.main_tab03:
-                    callUpFridgeFragment(2, 4);
+                    currentFridgeFragment = 2;
+                    callUpFridgeFragment(currentFridgeFragment, fridgeAndRowMap.get(currentFridgeFragment), currentStyle);
                     break;
                 case R.id.main_tab04:
-                    callUpFridgeFragment(3, 3);
+                    currentFridgeFragment = 3;
+                    callUpFridgeFragment(currentFridgeFragment, fridgeAndRowMap.get(currentFridgeFragment), currentStyle);
                     break;
             }
         }
     };
 
     //더러운 코드
-    private void setSelected(View v) {
+    private void setTabSelected(View v) {
         tab01.setSelected(false);
         tab02.setSelected(false);
         tab03.setSelected(false);
@@ -111,26 +154,26 @@ public class MainActivity extends ActionBarActivity {
         v.setSelected(true);
     }
 
-    //pos에 따른 냉장고 fragment를 가져옴. --> 1 ~ 4 값
-    private void callUpFridgeFragment(int pos, int rowNum) {
-        /*FridgeFragment01 fr = FridgeFragment01.newInstance(pos);
+    private void setLowerButtonSelected(View v) {
+        btn.setSelected(false);
+        btn2.setSelected(false);
+        v.setSelected(true);
+    }
+
+    private void callUpFridgeFragment(int pos, int rowNum, FridgeRow.Style style) {
+        Fragment existingFrag = getExistingFridgeFragment();
         FragmentTransaction t = getSupportFragmentManager().beginTransaction();
-        Fragment existingFrag = getSupportFragmentManager().findFragmentByTag(FRIDGE_FRAGMENT_TAG);
+        Toast.makeText(getApplicationContext(), "pos: " + pos + " rowNum: " + rowNum + " style : " + style, Toast.LENGTH_SHORT).show();
         if (existingFrag != null) {     //만약 이미 떠있는 fridgefragment가있으면 replace를한다.
-            t.replace(R.id.main_fragment_container, fr, FRIDGE_FRAGMENT_TAG);
+            t.replace(R.id.main_fragment_container, FridgeFragment.newInstance(pos, rowNum, style), FRIDGE_FRAGMENT_TAG);
             t.commit();
             return;
         }
-        t.add(R.id.main_fragment_container, fr, FRIDGE_FRAGMENT_TAG);
-        t.commit();*/
-        FragmentTransaction t = getSupportFragmentManager().beginTransaction();
-        Fragment existingFrag = getSupportFragmentManager().findFragmentByTag(FRIDGE_FRAGMENT_TAG);
-        if (existingFrag != null) {     //만약 이미 떠있는 fridgefragment가있으면 replace를한다.
-            t.replace(R.id.main_fragment_container, FridgeFragment.newInstance(pos, rowNum), FRIDGE_FRAGMENT_TAG);
-            t.commit();
-            return;
-        }
-        t.add(R.id.main_fragment_container, FridgeFragment.newInstance(pos, rowNum), FRIDGE_FRAGMENT_TAG).commit();
+        t.add(R.id.main_fragment_container, FridgeFragment.newInstance(pos, rowNum, style), FRIDGE_FRAGMENT_TAG).commit();
+    }
+
+    private Fragment getExistingFridgeFragment() {
+        return getSupportFragmentManager().findFragmentByTag(FRIDGE_FRAGMENT_TAG);
     }
 
     private void callViewFoodDialog() {

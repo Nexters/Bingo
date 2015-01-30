@@ -11,19 +11,38 @@ public final class Food {
     //eg) case '토마토':
     //      food.setName('Tomato');
     //      food.setImageIdAccordingToName();
-    private int imageId;
-    private String name;
-    private int count;
-    private String date_bought;
-    private String date_expired;
+    private int imageId = 0;
+    private String foodName;
+    private int count = 0;
+    private String boughtDate = "";
+    private String expiryDate;
     //place를 어떻게할까
+
+    public Food(){}
 
     public Food(int i, String n, int c, String db, String de) {
         this.imageId = i;
-        this.name = n;
+        this.foodName = n;
         this.count = c;
-        this.date_bought = db;
-        this.date_expired = de;
+        this.boughtDate = db;
+        this.expiryDate = de;
+    }
+
+    public Food(String foodName, String expiryDate) {
+        this.foodName = foodName;
+        this.expiryDate = expiryDate;
     }
     //Todo: getters and setters
+
+    public void setFoodName(String n) {
+        foodName = n;
+    }
+
+    public String getFoodName(){return foodName;}
+
+    public void setExpiryDate(String d) {
+        expiryDate = d;
+    }
+
+    public String getExpiryDate(){return expiryDate;}
 }
